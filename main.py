@@ -10,6 +10,7 @@ BirdWidth = 10
 BirdHeight = 10
 WIDTH = 800
 HEIGHT = 600
+gravFactor = 100
 
 #Begin
 pygame.init()
@@ -34,9 +35,18 @@ def render():
         pygame.draw.rect(screen, (RED, GREEN, BLUE), pygame.Rect(int(b.x), int(b.y), BirdWidth, BirdHeight))
 
 def update():
+    i = 0
     for b in birds:
-        b.x = b.x + b.velX
-        b.y = b.y + b.velY
+        if b.x > WIDTH or b.x < 0:
+            b.velX = -b.velX
+        if b.y > HEIGHT or b.y < 0:
+            b.velY = -b.velY
+        
+        v1x, v1y = gravitate(i)
+
+        b.x = b.x + b.velX + v1x
+        b.y = b.y + b.velY + v1y
+        i = i + 1
 
 def loop():
     done = False
@@ -49,6 +59,25 @@ def loop():
             if event.type == pygame.QUIT:
                 done = True
         pygame.display.flip()
+
+def gravitate(i):
+    cx = 0
+    cy = 0
+    j = 0
+    for b in birds:
+        if j == i:
+            continue
+        else:
+            cx = cx + b.x
+            cy = cy + b.y
+        j = j + 1
+    cx = cx / (len(birds) - 1)
+    cy = cy / (len(birds) - 1)
+
+    delX = (cx - birds[i].x) / gravFactor
+    delY = (cy - birds[i].y) / gravFactor
+    return delX, delY
+
 
 init()
 loop()
