@@ -1,5 +1,6 @@
 import pygame
 import random
+import math
 from pygame.locals import *
 
 #Constants
@@ -27,12 +28,17 @@ class Bird:
 
 #Methods
 def init():
-    for i in range(0, 25):
+    for i in range(0, 2):
         birds.append(Bird(random.uniform(0, WIDTH - BirdWidth), random.uniform(0, HEIGHT - BirdHeight), random.uniform(-0.5, 0.5), random.uniform(-0.5, 0.5)))
 
 def render():
+    i = 0
     for b in birds:
-        pygame.draw.rect(screen, (RED, GREEN, BLUE), pygame.Rect(int(b.x), int(b.y), BirdWidth, BirdHeight))
+        if i == 1:
+            pygame.draw.rect(screen, (255, GREEN, BLUE), pygame.Rect(int(b.x), int(b.y), BirdWidth, BirdHeight))
+        else:
+            pygame.draw.rect(screen, (RED, GREEN, BLUE), pygame.Rect(int(b.x), int(b.y), BirdWidth, BirdHeight))
+        i = i + 1
 
 def update():
     i = 0
@@ -43,6 +49,7 @@ def update():
             b.velY = -b.velY
         
         v1x, v1y = gravitate(i)
+        #v2x, v2y = avoid(i)
 
         b.x = b.x + b.velX + v1x
         b.y = b.y + b.velY + v1y
@@ -76,8 +83,27 @@ def gravitate(i):
 
     delX = (cx - birds[i].x) / gravFactor
     delY = (cy - birds[i].y) / gravFactor
+
+    if i == 1:
+        print(delX, " ", delY)
+        print(cx, " ", cy, " ", birds[i].x, " ", birds[i].y)
     return delX, delY
 
+def avoid(i):
+    j = 0
+    delX = 0
+    delY = 0
+
+    for b in birds:
+        if i == j:
+            continue
+        if distance(birds[j].x, birds[j].y, birds[i].x, birds[i].y) < 50:
+            #do something
+            delX = 0
+        
+
+def distance(x1, y1, x2, y2):
+    return math.sqrt((x2 - x1)**2 + (y2 - y1)**2)
 
 init()
 loop()
