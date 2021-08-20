@@ -29,7 +29,7 @@ class Bird:
 #Methods
 def init():
     for i in range(0, 2):
-        birds.append(Bird(random.uniform(0, WIDTH - BirdWidth), random.uniform(0, HEIGHT - BirdHeight), random.uniform(-0.5, 0.5), random.uniform(-0.5, 0.5)))
+        birds.append(Bird(random.uniform(0, WIDTH - BirdWidth), random.uniform(0, HEIGHT - BirdHeight), 0, 0))
 
 def render():
     i = 0
@@ -73,18 +73,19 @@ def gravitate(i):
     j = 0
     for b in birds:
         if j == i:
+            j = j + 1
             continue
         else:
             cx = cx + b.x
             cy = cy + b.y
-        j = j + 1
+            j = j + 1
     cx = cx / (len(birds) - 1)
     cy = cy / (len(birds) - 1)
 
     delX = (cx - birds[i].x) / gravFactor
     delY = (cy - birds[i].y) / gravFactor
 
-    if i == 1:
+    if i == 0:
         print(delX, " ", delY)
         print(cx, " ", cy, " ", birds[i].x, " ", birds[i].y)
     return delX, delY
